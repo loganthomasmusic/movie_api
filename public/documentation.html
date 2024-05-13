@@ -1,7 +1,122 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myFlix Documentation</title>
+    <style>
+        table , th, td {
+            margin: 5px;
+            border: 1px solid;
+        }
+    </style>
+</head>
 
 <h1>myFlix</h1>
 
 <p>myFlix is a web application that provides users with access to information about different
 movies, directors, and genres. Users will be able to sign up, update their
 personal information, and create a list of their favorite movies.</p>
+
+<body>
+    <h1>myFlix Documentation</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Description of Endpoint Return</th>
+                <th>Endpoint URL</th>
+                <th>Method Type</th>
+                <th>Format of Request Data</th>
+                <th>Format of Response Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Return a list of ALL movies</td>
+                <td>/movies</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about all the movies and status code 200 if sucessful</td>
+            </tr>
+            <tr>
+                <td>Return data about a single movie by title</td>
+                <td>/movies/:title</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about the movie containing the title and status code 200 if sucessful</td>
+            </tr>
+            <tr>
+                <td>Return data about a genre by name</td>
+                <td>/movies/genre/:genreName</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about the genre and status code 200 if sucessful</td>
+            </tr>
+            <tr>
+                <td>Return data about a director by name</td>
+                <td>/movies/directors/:directorName</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about the director containing the name and status code 200 if sucessful</td>
+            </tr>
+            <tr>
+                <td>Allow new users to register</td>
+                <td>/users</td>
+                <td>POST</td>
+                <td>A JSON object holding data from the user to be added
+                    <code>
+                        {
+                            "fullname": "John Smith",
+                            "email": "johnsmith@gmail.com"
+                        }
+                    </code>
+                </td>
+                <td>A JSON Object holding data about the new user and status code 201 if created</td>
+            </tr>
+            <tr>
+                <td>Allow users to update their user info</td>
+                <td>/users/:id</td>
+                <td>PUT</td>
+                <td>A JSON object holding data from the user to be updated
+                    <code>
+                        {
+                            "fullname": "John Smith",
+                            "email": "johnsmith@gmail.com"
+                        }
+                    </code>
+                </td>
+                <td>A JSON object holding data from the user that has been updated and status code 200 if successful</td>
+            </tr>
+            <tr>
+                <td>Allow users to add a movie to their list of favorites</td>
+                <td>/users/:id/:movieTitle</td>
+                <td>POST</td>
+                <td>A JSON object holding data from the user about favMovies to be updated
+                    <code>
+                        {
+                            "director": "Christopher Nolan",
+                            "genre": "Thriller"
+                        }
+                    </code>
+                </td>
+                <td>A JSON Object holding new data about the updated user and status code 200 if sucessful</td>
+            </tr>
+            <tr>
+                <td>Allow users to remove a movie from their list of favorites</td>
+                <td>/users/:id/:movieTitle</td>
+                <td>DELETE</td>
+                <td>None</td>
+                <td>A JSON Object holding new data about the updated user and status code 200 if sucessful</td>
+                </tr>
+            <tr>
+                <td>Allow existing users to deregister</td>
+                <td>/users/:id/</td>
+                <td>DELETE</td>
+                <td>None</td>
+                <td>A message stating that the user was successfully deleted</td>
+            </tr>
+        </tbody>
+    </table>
+    
+</body>
+</html>
