@@ -32,11 +32,11 @@ personal information, and create a list of their favorite movies.</p>
         </thead>
         <tbody>
             <tr>
-                <td>Return a list of ALL movies</td>
+                <td>Return a list of ALL movies to the user</td>
                 <td>/movies</td>
                 <td>GET</td>
                 <td>None</td>
-                <td>A JSON object holding data about all the movies and status code 200 if sucessful</td>
+                <td>A JSON object holding data about all the movies and status code 201 if sucessful</td>
             </tr>
             <tr>
                 <td>Return data about a single movie by title</td>
@@ -66,8 +66,10 @@ personal information, and create a list of their favorite movies.</p>
                 <td>A JSON object holding data from the user to be added
                     <code>
                         {
-                            "fullname": "John Smith",
-                            "email": "johnsmith@gmail.com"
+                            "Username": "John Smith",
+                            "Password": "mypassword123"
+                            "Email": "johnsmith@gmail.com"
+                            "Birthday": "9/30/1980"
                         }
                     </code>
                 </td>
@@ -75,45 +77,40 @@ personal information, and create a list of their favorite movies.</p>
             </tr>
             <tr>
                 <td>Allow users to update their user info</td>
-                <td>/users/:id</td>
+                <td>/users/:Username</td>
                 <td>PUT</td>
                 <td>A JSON object holding data from the user to be updated
                     <code>
                         {
-                            "fullname": "John Smith",
-                            "email": "johnsmith@gmail.com"
+                            "Username": "John Smith",
+                            "Password": "mypassword123"
+                            "Email": "johnsmith@gmail.com"
+                            "Birthday": "9/30/1980"
                         }
                     </code>
                 </td>
-                <td>A JSON object holding data from the user that has been updated and status code 200 if successful</td>
+                <td>A JSON object holding data from the user that has been updated</td>
             </tr>
             <tr>
                 <td>Allow users to add a movie to their list of favorites</td>
-                <td>/users/:id/:movieTitle</td>
+                <td>/users/:Username/movies/:MovieID</td>
                 <td>POST</td>
-                <td>A JSON object holding data from the user about favMovies to be updated
-                    <code>
-                        {
-                            "director": "Christopher Nolan",
-                            "genre": "Thriller"
-                        }
-                    </code>
-                </td>
-                <td>A JSON Object holding new data about the updated user and status code 200 if sucessful</td>
+                <td>None</td>
+                <td>A JSON Object holding new data about the updated user</td>
             </tr>
             <tr>
                 <td>Allow users to remove a movie from their list of favorites</td>
-                <td>/users/:id/:movieTitle</td>
+                <td>/users/:Username/movies/:MovieID</td>
                 <td>DELETE</td>
                 <td>None</td>
-                <td>A JSON Object holding new data about the updated user and status code 200 if sucessful</td>
+                <td>A JSON Object holding new data about the updated user</td>
                 </tr>
             <tr>
                 <td>Allow existing users to deregister</td>
-                <td>/users/:id/</td>
+                <td>/users/:Username/</td>
                 <td>DELETE</td>
                 <td>None</td>
-                <td>A message stating that the user was successfully deleted</td>
+                <td>A message stating that the user was deleted and status code 200 if deleted</td>
             </tr>
         </tbody>
     </table>
