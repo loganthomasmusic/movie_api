@@ -1,3 +1,7 @@
+const express = require('express');
+    morgan = require('morgan');
+    uuid = require('uuid');
+
 const mongoose = require('mongoose');
 const Models = require('./models.js')
 
@@ -6,18 +10,19 @@ const Users = Models.User;
 
 mongoose.connect('mongodb://localhost:27017/cfDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
-const express = require('express');
-    morgan = require('morgan');
-    uuid = require('uuid');
+const passport = require('passport');
+require('./passport');
 
 const app = express();
 app.use(express.urlencoded({extended: true}));
+
+let auth = require('./auth')(app);
 
 app.use(morgan('common'));
 app.use(express.json());
   
 // 1. Return a list of ALL movies to the user
-app.get('/movies', async (req, res) => {
+app.get('/movies', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Movies.find()
       .then((movies) => {
           res.status(201).json(movies);
@@ -29,7 +34,7 @@ app.get('/movies', async (req, res) => {
 });
 
 // 2. Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user
-app.get('/movies/:title', async (req, res) => {
+app.get('/movies/:title', passport.authenticate('jwt', {session: false }), async (req, res) => {
 
   const title = req.params.title;
   const movie = await Movies.findOne({ Title: title });
@@ -43,7 +48,7 @@ app.get('/movies/:title', async (req, res) => {
 });
 
 // 3. Return data about a genre (description) by name/title (e.g., “Thriller”)
-app.get('/movies/genre/:genreName', async (req, res) => {
+app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false }), async (req, res) => {
   try {
       const genreName = req.params.genreName;
       const movie = await Movies.findOne({ 'Genre.Name': genreName });
@@ -60,7 +65,7 @@ app.get('/movies/genre/:genreName', async (req, res) => {
 });
 
 // 4. Return data about a director (bio, birth year, death year) by name
-app.get('/movies/directors/:directorName', async (req, res) => {
+app.get('/movies/directors/:directorName', passport.authenticate('jwt', {session: false }), async (req, res) => {
   try {
       const directorName = req.params.directorName;
       const movie = await Movies.findOne({ 'Director.Name': directorName });
@@ -122,7 +127,7 @@ app.post('/users', async (req, res) => {
   (required)
   Birthday: Date
 }*/
-app.put('/users/:Username', async (req, res) => {
+app.put('/users/:Username', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
       Username: req.body.Username,
@@ -143,7 +148,7 @@ app.put('/users/:Username', async (req, res) => {
 });
 
 // 7. Allow users to add a movie to their list of favorites
-app.post('/users/:Username/movies/:MovieID', async (req, res) => {
+app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
    },
@@ -158,7 +163,7 @@ app.post('/users/:Username/movies/:MovieID', async (req, res) => {
 });
 
 // 8. Allow users to remove a movie from their list of favorites
-app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
+app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Users.findOneAndUpdate({ Username: req.params.Username }, {
       $pull: { FavoriteMovies: req.params.MovieID }
   },
@@ -173,7 +178,7 @@ app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
 });
 
 // 9. Allow existing users to deregister
-app.delete('/users/:Username', async (req, res) => {
+app.delete('/users/:Username', passport.authenticate('jwt', {session: false }), async (req, res) => {
 
   await Users.findOneAndDelete({ Username: req.params.Username })
       .then((user) => {
@@ -190,7 +195,7 @@ app.delete('/users/:Username', async (req, res) => {
 });
 
 // Get all users
-app.get('/users', async (req, res) => {
+app.get('/users', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Users.find()
     .then((users) => {
       res.status(201).json(users);
@@ -202,7 +207,7 @@ app.get('/users', async (req, res) => {
 });
 
 // Get a user by username
-app.get('/users/:Username', async (req, res) => {
+app.get('/users/:Username', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Users.findOne({ Username: req.params.Username })
     .then((user) => {
       res.json(user);
@@ -214,7 +219,7 @@ app.get('/users/:Username', async (req, res) => {
 });
 
 // Delete a user by username
-app.delete('/users/:Username', async (req, res) => {
+app.delete('/users/:Username', passport.authenticate('jwt', {session: false }), async (req, res) => {
   await Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
       if (!user) {
@@ -249,16 +254,6 @@ app.listen(8080, () => {
     console.log('Your app is listening on port 8080.');
 });
 
-
-
-
-
-
-
-
-
-
-
 //UPDATE Allow users to update their user info (username)
 app.put('/users/:id', (req, res) => {
   const { id } = req.params;
@@ -289,3 +284,28 @@ app.post('/users/:id/:moviesTitle', (req, res) => {
   }
 
 })
+
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  // CONDITION TO CHECK ADDED HERE
+  if(req.user.Username !== req.params.Username){
+      return res.status(400).send('Permission denied');
+  }
+  // CONDITION ENDS
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+      $set:
+      {
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday
+      }
+  },
+      { new: true }) // This line makes sure that the updated document is returned
+      .then((updatedUser) => {
+          res.json(updatedUser);
+      })
+      .catch((err) => {
+          console.log(err);
+          res.status(500).send('Error: ' + err);
+      })
+});
