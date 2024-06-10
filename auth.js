@@ -42,6 +42,7 @@ module.exports = (router) => {
     router.get("/login", (req, res) => {
       const user = {
         Username: "testuser",
+        Password: "testpassword",
       };
       let token = generateJWTToken(user);
       return res.json({ user, token, info });
