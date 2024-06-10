@@ -1,11 +1,3 @@
-const fs = require("fs");
-const dotenv = require("dotenv");
-
-if (fs.existsSync("./.env.local")) {
-  dotenv.config({ path: "./.env.local" });
-} else {
-  dotenv.config();
-}
 const express = require("express");
 morgan = require("morgan");
 uuid = require("uuid");
@@ -17,9 +9,8 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 //mongoose.connect('mongodb://localhost:27017/cfDB', { useNewUrlParser: true, useUnifiedTopology: true });
-// Here we are debugging the connection to the database
-const CONNECTION_URI = process.env.CONNECTION_URI;
-console.log("ConnectionURI:" + CONNECTION_URI);
+// get from env.js
+const { CONNECTION_URI } = require("./env");
 
 mongoose.connect(CONNECTION_URI, {
   useNewUrlParser: true,
