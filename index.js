@@ -31,7 +31,6 @@ const { check, validationResult } = require("express-validator");
 
 let auth = require("./auth")(app);
 
-
 app.use(morgan("common"));
 app.use(express.json());
 
@@ -327,9 +326,10 @@ app.get("/", (req, res) => {
   res.send("Welcome to my movie app!");
 });
 
-app.get("/movies", (req, res) => {
-  res.json(topMovies);
-});
+// Commented out as authenticated GET to "/movies" is implemented above
+// app.get("/movies", (req, res) => {
+//   res.json(topMovies);
+// });
 
 app.use(
   "/documentation",
