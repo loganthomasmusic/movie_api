@@ -29,7 +29,7 @@ module.exports = (router) => {
       }
       req.login(user, { session: false }, (error) => {
         if (error) {
-          res.send({error, info});
+          res.send({ error, info });
         }
         let token = generateJWTToken(user.toJSON());
         return res.json({ user, token, info });
@@ -41,11 +41,11 @@ module.exports = (router) => {
   if (process.env.NODE_ENV === "development") {
     router.get("/login", (req, res) => {
       const user = {
-        Username: "testuser",
-        Password: "testpassword",
+        Username: "john_doe",
+        Password: "password123", // TODO - This should be hashed and not left in exported_collections for live data in a production application
       };
       let token = generateJWTToken(user);
-      return res.json({ user, token, info });
+      return res.json({ user, token });
     });
   }
 };

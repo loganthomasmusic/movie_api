@@ -17,8 +17,7 @@ mongoose.connect(CONNECTION_URI, {
   useUnifiedTopology: true,
 });
 
-const passport = require("passport");
-require("./passport");
+const passport = require("./passport");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +30,7 @@ const bcrypt = require("bcrypt");
 const { check, validationResult } = require("express-validator");
 
 let auth = require("./auth")(app);
+
 
 app.use(morgan("common"));
 app.use(express.json());
