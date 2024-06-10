@@ -1,9 +1,8 @@
 const { JWT_SECRET } = require("./env");
 
-const jwt = require("jsonwebtoken"),
-  passport = require("passport");
+const jwt = require("jsonwebtoken");
 
-require("./passport"); // Your local passport file
+const passport = require("./passport"); // Your local passport file
 
 let generateJWTToken = (user) => {
   try {
@@ -25,18 +24,18 @@ module.exports = (router) => {
         return res.status(400).json({
           message: "Something is not right",
           user: user,
+          info,
         });
       }
       req.login(user, { session: false }, (error) => {
         if (error) {
-          res.send(error);
+          res.send({error, info});
         }
         let token = generateJWTToken(user.toJSON());
-        return res.json({ user, token });
+        return res.json({ user, token, info });
       });
     })(req, res);
   });
-
 
   // We only show this route in development mode to avoid security issues
   if (process.env.NODE_ENV === "development") {
@@ -45,7 +44,7 @@ module.exports = (router) => {
         Username: "testuser",
       };
       let token = generateJWTToken(user);
-      return res.json({ user, token });
+      return res.json({ user, token, info });
     });
   }
 };
