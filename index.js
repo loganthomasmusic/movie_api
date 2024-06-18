@@ -26,8 +26,6 @@ app.use(express.urlencoded({ extended: true }));
 const cors = require("cors");
 app.use(cors());
 
-const bcrypt = require("bcrypt");
-
 const { check, validationResult } = require("express-validator");
 
 let auth = require("./auth")(app);
