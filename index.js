@@ -1,13 +1,7 @@
-<<<<<<< Updated upstream
-const express = require("express");
-morgan = require("morgan");
-uuid = require("uuid");
-=======
 const express = require('express'),
   bodyParser = require('body-parser'),
   uuid = require('uuid');
 const morgan = require('morgan');
->>>>>>> Stashed changes
 
 const mongoose = require("mongoose");
 const Models = require("./models.js");
@@ -38,13 +32,8 @@ const { check, validationResult } = require("express-validator");
 
 let auth = require("./auth")(app);
 
-<<<<<<< Updated upstream
-app.use(morgan("common"));
-app.use(express.json());
-=======
 app.use(morgan('common'));
 app.use(bodyParser.json());
->>>>>>> Stashed changes
 
 // 1. Return a list of ALL movies to the user
 app.get(
